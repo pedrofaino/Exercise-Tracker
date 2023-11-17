@@ -63,7 +63,7 @@ app.post('/api/users/:id/exercises', async function (req, res) {
   userD.exercises.push(newExercise)
   try {
     userD.save().then(() => console.log(`Exercise added to ${userD}`));
-    return res.json({ userD })
+    return res.json({ _id:userD._id, username:userD.username, date:date.toDateString(), duration: dur, description:des })
   } catch (error) {
     console.log(`Error: ${error}`)
     return res.json({ error: error })
