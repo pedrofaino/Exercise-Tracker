@@ -54,8 +54,8 @@ app.post('/api/users', function (req, res) {
 })
 
 app.post('/api/users/:id/exercises', async function (req, res) {
-  let id = req.params.id;
-  let userD = await user.findById(id);
+  let _id = req.body[':_id']
+  let userD = await user.findById(_id);
   let des = req.body.description
   let dur = req.body.duration
   let date = new Date(req.body.date)
@@ -63,7 +63,7 @@ app.post('/api/users/:id/exercises', async function (req, res) {
   userD.exercises.push(newExercise)
   try {
     userD.save().then(() => console.log(`Exercise added to ${userD}`));
-    return res.json({ _id:userD._id, username:userD.username, date:date.toDateString(), duration: dur, description:des })
+    return res.json({ _id: userD._id, username: userD.username, date: date.toDateString(), duration: parseInt(dur), description: des })
   } catch (error) {
     console.log(`Error: ${error}`)
     return res.json({ error: error })
