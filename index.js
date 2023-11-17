@@ -29,6 +29,17 @@ const userSchema = new mongoose.Schema({
 })
 let user = mongoose.model('user', userSchema);
 
+app.get('/api/users', async function (req, res) {
+  const users = await user.find()
+  const listUsers = []
+  for (let user in users) {
+    listUsers.push({
+      username: users[user].username,
+      _id: users[user]._id,
+    })
+  }
+  return res.json(listUsers)
+})
 
 app.post('/api/users', function (req, res) {
   let username = req.body.username;
@@ -52,7 +63,7 @@ app.post('/api/users/:id/exercises', async function (req, res) {
   userD.exercises.push(newExercise)
   try {
     userD.save().then(() => console.log(`Exercise added to ${userD}`));
-    return res.json({ username: userD.username, description: des, duration: dur, date: date.toDateString(), _id: userD._id })
+    return res.json({ userD })
   } catch (error) {
     console.log(`Error: ${error}`)
     return res.json({ error: error })
@@ -61,24 +72,24 @@ app.post('/api/users/:id/exercises', async function (req, res) {
 
 app.get('/api/users/:id/logs', async function (req, res) {
   const userId = req.params.id
-  const search = url.parse(req.url,true).search
+  const search = url.parse(req.url, true).search
   const from = new Date(search.split('&')[0].slice(1)).valueOf()
   const to = new Date(search.split('&')[1]).valueOf()
   const limit = (search.split('&')[2])
   const userD = await user.findById(userId);
   const listOfExercises = [];
-  for(let exercise of userD.exercises){
-    if(exercise.date.valueOf()>from && exercise.date.valueOf()<to){
+  for (let exercise of userD.exercises) {
+    if (exercise.date.valueOf() > from && exercise.date.valueOf() < to) {
       listOfExercises.push({
         description: exercise.description,
         duration: exercise.duration,
-        date:exercise.date.toDateString()           
+        date: exercise.date.toDateString()
       });
     }
   }
   console.log(limit)
-  console.log(listOfExercises.slice(0,limit));
-  return res.json({username:userD.username, count:parseInt(limit),_id:userD._id,log:listOfExercises.slice(0,limit)})
+  console.log(listOfExercises.slice(0, limit));
+  return res.json({ username: userD.username, count: parseInt(limit), _id: userD._id, log: listOfExercises.slice(0, limit) })
 })
 
 
