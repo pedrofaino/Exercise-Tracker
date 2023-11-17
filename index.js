@@ -73,23 +73,32 @@ app.post('/api/users/:id/exercises', async function (req, res) {
 app.get('/api/users/:id/logs', async function (req, res) {
   const userId = req.params.id
   const search = url.parse(req.url, true).search
-  const from = new Date(search.split('&')[0].slice(1)).valueOf()
-  const to = new Date(search.split('&')[1]).valueOf()
-  const limit = (search.split('&')[2])
+  const from = new Date(search?.split('&')[0].slice(1)).valueOf()
+  const to = new Date(search?.split('&')[1]).valueOf()
+  const limit = (search?.split('&')[2])
   const userD = await user.findById(userId);
   const listOfExercises = [];
-  for (let exercise of userD.exercises) {
-    if (exercise.date.valueOf() > from && exercise.date.valueOf() < to) {
+  if (isNaN(from)) {
+    for (let exercise of userD.exercises) {
       listOfExercises.push({
         description: exercise.description,
         duration: exercise.duration,
         date: exercise.date.toDateString()
       });
     }
+    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises })
+  } else {
+    for (let exercise of userD.exercises) {
+      if (exercise.date.valueOf() > from && exercise.date.valueOf() < to) {
+        listOfExercises.push({
+          description: exercise.description,
+          duration: exercise.duration,
+          date: exercise.date.toDateString()
+        });
+      }
+    }
+    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises.slice(0, limit) })
   }
-  console.log(limit)
-  console.log(listOfExercises.slice(0, limit));
-  return res.json({ username: userD.username, count: userD.exercises.length(), _id: userD._id, log: listOfExercises.slice(0, limit) })
 })
 
 
