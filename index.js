@@ -69,7 +69,11 @@ app.get('/api/users/:id/logs', async function (req, res) {
   const listOfExercises = [];
   for(let exercise of userD.exercises){
     if(exercise.date.valueOf()>from && exercise.date.valueOf()<to){
-      listOfExercises.push(exercise);
+      listOfExercises.push({
+        description: exercise.description,
+        duration: exercise.duration,
+        date:exercise.date.toDateString()           
+      });
     }
   }
   console.log(limit)
