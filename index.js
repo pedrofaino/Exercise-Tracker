@@ -89,7 +89,7 @@ app.get('/api/users/:id/logs', async function (req, res) {
   }
   console.log(limit)
   console.log(listOfExercises.slice(0, limit));
-  return res.json({ username: userD.username, count: parseInt(limit), _id: userD._id, log: listOfExercises.slice(0, limit) })
+  return res.json({ username: userD.username, count: userD.exercises.length(), _id: userD._id, log: listOfExercises.slice(0, limit) })
 })
 
 
