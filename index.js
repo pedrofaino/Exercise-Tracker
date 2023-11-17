@@ -72,24 +72,27 @@ app.post('/api/users/:id/exercises', async function (req, res) {
 
 app.get('/api/users/:id/logs', async function (req, res) {
   const userId = req.params.id
-  const from = new Date(req.query?.from).valueOf()
-  const to = new Date(req.query?.to).valueOf()
-  const limit = parseInt(req.query?.limit)
+  const from = req.query.from ? new Date(req.query?.from).valueOf() : undefined;
+  const to = req.query.to ? new Date(req.query?.to).valueOf() : undefined;
+  const limit = req.query.limit ? parseInt(req.query?.limit) : undefined;
   const userD = await user.findById(userId);
   const listOfExercises = [];
-  console.log(from)
-  if (isNaN(from)) {
+  console.log(from, to, limit)
+  if (from !== undefined || to !== undefined) {
     for (let exercise of userD.exercises) {
-      listOfExercises.push({
-        description: exercise.description,
-        duration: exercise.duration,
-        date: exercise.date.toDateString()
-      });
-    }
-    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises })
-  } else {
-    for (let exercise of userD.exercises) {
-      if (exercise.date.valueOf() > from && exercise.date.valueOf() < to) {
+      if (to === undefined && exercise.date.valueOf() > from) {
+        listOfExercises.push({
+          description: exercise.description,
+          duration: exercise.duration,
+          date: exercise.date.toDateString()
+        })
+      } else if (from === undefined && exercise.date.valueOf() < to) {
+        listOfExercises.push({
+          description: exercise.description,
+          duration: exercise.duration,
+          date: exercise.date.toDateString()
+        });
+      } else if (exercise.date.valueOf() > from && exercise.date.valueOf() < to) {
         listOfExercises.push({
           description: exercise.description,
           duration: exercise.duration,
@@ -98,6 +101,15 @@ app.get('/api/users/:id/logs', async function (req, res) {
       }
     }
     return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises.slice(0, limit) })
+  } else {
+    for (let exercise of userD.exercises) {
+      listOfExercises.push({
+        description: exercise.description,
+        duration: exercise.duration,
+        date: exercise.date.toDateString()
+      });
+    }
+    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises })
   }
 })
 
