@@ -72,12 +72,13 @@ app.post('/api/users/:id/exercises', async function (req, res) {
 
 app.get('/api/users/:id/logs', async function (req, res) {
   const userId = req.params.id
-  const from = new Date(req.query.from).valueOf()
-  const to = new Date(req.query.to).valueOf()
-  const limit = parseInt(req.query.limit)
+  const from = new Date(req.query?.from).valueOf()
+  const to = new Date(req.query?.to).valueOf()
+  const limit = parseInt(req.query?.limit)
   const userD = await user.findById(userId);
   const listOfExercises = [];
-  if (from === undefined) {
+  console.log(from)
+  if (isNaN(from)) {
     for (let exercise of userD.exercises) {
       listOfExercises.push({
         description: exercise.description,
