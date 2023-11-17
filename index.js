@@ -73,9 +73,9 @@ app.post('/api/users/:id/exercises', async function (req, res) {
 app.get('/api/users/:id/logs', async function (req, res) {
   const userId = req.params.id
   const search = url.parse(req.url, true).search
-  const from = req.params.from
-  const to = req.params.to
-  const limit = req.params.limit
+  const from = req.query.from
+  const to = req.query.to
+  const limit = req.query.limit
   const userD = await user.findById(userId);
   const listOfExercises = [];
   console.log(from,to,limit)
