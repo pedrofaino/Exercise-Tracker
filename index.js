@@ -54,7 +54,7 @@ app.post('/api/users', function (req, res) {
 })
 
 app.post('/api/users/:id/exercises', async function (req, res) {
-  let id = res.params.id;
+  let id = req.params.id;
   let userD = await user.findById(id);
   let des = req.body.description
   let dur = req.body.duration
