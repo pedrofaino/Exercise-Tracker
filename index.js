@@ -109,7 +109,7 @@ app.get('/api/users/:id/logs', async function (req, res) {
         date: exercise.date.toDateString()
       });
     }
-    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises })
+    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: limit ? listOfExercises.slice(0, limit) : listOfExercises.slice(0) })
   }
 })
 
