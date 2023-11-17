@@ -100,7 +100,7 @@ app.get('/api/users/:id/logs', async function (req, res) {
         });
       }
     }
-    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: listOfExercises.slice(0, limit) })
+    return res.json({ username: userD.username, count: userD.exercises.length, _id: userD._id, log: limit ? listOfExercises.slice(0, limit) : listOfExercises.slice(0) })
   } else {
     for (let exercise of userD.exercises) {
       listOfExercises.push({
